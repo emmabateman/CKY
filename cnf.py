@@ -65,7 +65,7 @@ def remove_rhs_terminals(production):
         for element in rhs:
             if grammar.is_terminal(element):
                 #create dummy nonterminal
-                new_nt = grammar.Nonterminal(create_nonterminal())
+                new_nt = grammar.Nonterminal(create_nonterminal(production.lhs().symbol()))
                 new_rhs = new_rhs + (new_nt,)
 
                 #define dummy nonterminal
@@ -77,21 +77,20 @@ def remove_rhs_terminals(production):
         R[R.index(production)] = grammar.Production(production.lhs(), new_rhs)
 
 #Choose random name for new nonterminal.
-def create_nonterminal():
+def create_nonterminal(base):
+    num = 0
     while True:
-        string = "_"
-        for i in range(3):
-            string += str(unichr(random.randint(ord('A'), ord('Z'))))
-        if not string in N:
-            N.append(string)
-            return string
+        new_nt = base+str(num)
+        if not new_nt in N:
+            return new_nt
+        num += 1
 
 #Shorten long productions by splitting them into two new productions.
 def shorten(production):
     lhs = production.lhs()
     rhs = production.rhs()
     if len(rhs) > 2: #it's too long
-        new_nt = grammar.Nonterminal(create_nonterminal())
+        new_nt = grammar.Nonterminal(create_nonterminal(lhs.symbol()))
         new_production_1 = grammar.Production(lhs, (rhs[0], new_nt))
         new_rhs = ()
         for i in range(1, len(rhs)):
