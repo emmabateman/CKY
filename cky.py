@@ -1,5 +1,6 @@
 import sys
 import string
+import argparse
 
 import nltk
 from nltk import grammar
@@ -26,10 +27,10 @@ def check_duplicate(tree1, tree2):
     return match
 
 #Read grammar and sentences to parse from files.
-def init():
+def init(grammar_file, sentence_file):
     global cnf_grammar, sentences
-    cnf_grammar = cnf.convert(sys.argv[1])
-    f = open(sys.argv[2])
+    cnf_grammar = cnf.convert(grammar_file)
+    f = open(sentence_file)
     sentences = f.readlines()
 
 #Parse using cky algorithm.
@@ -77,7 +78,7 @@ def findtrees_from_terminal(word):
 def printfinal(table):
     parse_list = table[0][-1]
 
-    #remove duplicates
+    #Remove duplicates.
     for i in range(len(parse_list)-1):
         for j in parse_list[i+1:]:
             if check_duplicate(parse_list[i], j):
@@ -90,11 +91,19 @@ def printfinal(table):
 
 def main():
     global cnf_grammar, sentences
-    init()
+
+    #Parse arguments.
+    parser = argparse.ArgumentParser(description = 'An implementation of the CKY parsing algorithm.')
+    parser.add_argument('grammar', type=str, help='path to a CFG file')
+    parser.add_argument('sentences', type=str,
+                        help='path to a text file with sentences to parse')
+    args = parser.parse_args()
+
+    init(args.grammar, args.sentences)
     for sentence in sentences:
-        #tokenize
+        #Tokenize.
         words = nltk.word_tokenize(sentence)
-        #parse
+        #Parse/\.
         table = parse(words)
         print(sentence[:-1])
         printfinal(table)
