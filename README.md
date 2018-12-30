@@ -1,7 +1,7 @@
 # CKY
 An implementation of the CKY parsing algorithm
-# Version
-This code runs on Python 2.7
+# Dependencies
+This code requires Python 2.7 and NLTK
 # How to Use
 ```
 python cky.py grammar.cfg sentences.txt
